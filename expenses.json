@@ -1,0 +1,71 @@
+{
+    "money": {
+        "Food": {
+            "items": [
+                {
+                    "amount": 2321.0,
+                    "description": "sadasdsa"
+                },
+                {
+                    "amount": 1232.0,
+                    "description": "sdasdsa"
+                },
+                {
+                    "amount": 123213.0,
+                    "description": "1232"
+                }
+            ],
+            "sumOfAmounts": 126766.0
+        },
+        "Home": {
+            "items": [
+                {
+                    "amount": 121.0,
+                    "description": "iwiuq"
+                }
+            ],
+            "sumOfAmounts": 121.0
+        },
+        "Transfers": {
+            "items": [
+                {
+                    "amount": 534.0,
+                    "description": "dgddsg"
+                }
+            ],
+            "sumOfAmounts": 534.0
+        },
+        "Education": {
+            "items": [
+                {
+                    "amount": 32332.0,
+                    "description": "dsadsad"
+                }
+            ],
+            "sumOfAmounts": 32332.0
+        },
+        "Sport": {
+            "items": [
+                {
+                    "amount": 3213.0,
+                    "description": "sadasd"
+                }
+            ],
+            "sumOfAmounts": 3213.0
+        },
+        "Other": {
+            "items": [],
+            "sumOfAmounts": 0.0
+        },
+        "Medicine": {
+            "items": [
+                {
+                    "amount": 1200.0,
+                    "description": "pills"
+                }
+            ],
+            "sumOfAmounts": 1200.0
+        }
+    },
+    "totalSum": 164166.0
+}
