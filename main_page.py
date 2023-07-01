@@ -33,6 +33,7 @@ class MainPage(QWidget):
         self.create_pie_chart()
         self.create_total_sum_label()
         self.create_edit_button()
+        self.create_helper_button()
 
     def load_data(self):
         """
@@ -71,7 +72,10 @@ class MainPage(QWidget):
             category = categories[i]
             amount = amounts[i]
             slice_label = f"{category} ({amount:.2f})"
-            slice_percentage = amount / total_amount * 100
+            if (total_amount == 0):
+                slice_percentage = 0
+            else:
+                slice_percentage = amount / total_amount * 100
             slice = series.append(slice_label, slice_percentage)
             slice.setBrush(QColor(colors[i % len(colors)]))
 
@@ -95,6 +99,13 @@ class MainPage(QWidget):
         """
         self.editor_button = QPushButton("Edit Expenses")
         self.layout.addWidget(self.editor_button)
+
+    def create_helper_button(self):
+        """
+        Creates and displays the button to switch to the helper page.
+        """
+        self.helper_button = QPushButton("Help me with Budget!")
+        self.layout.addWidget(self.helper_button)
 
     def update_data(self, data):
         """
@@ -128,7 +139,10 @@ class MainPage(QWidget):
             category = categories[i]
             amount = amounts[i]
             slice_label = f"{category} ({amount:.2f})"
-            slice_percentage = amount / total_amount * 100
+            if (total_amount == 0):
+                slice_percentage = 0
+            else:
+                slice_percentage = amount / total_amount * 100
             slice = series.append(slice_label, slice_percentage)
             slice.setBrush(QColor(colors[i % len(colors)]))
 
