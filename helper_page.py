@@ -1,7 +1,9 @@
 import os
 import json
 import numpy as np
+from PyQt5.QtCore import Qt
 from sklearn.cluster import KMeans
+from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton
 
 
@@ -27,6 +29,7 @@ class HelperPage(QWidget):
         self.recommendations = []
 
         self.layout = QVBoxLayout()
+        self.resize(800, 600)
         self.setLayout(self.layout)
 
         self.read_expenses_data()
@@ -36,6 +39,10 @@ class HelperPage(QWidget):
         self.identify_reductions()
         self.generate_recommendations()
         self.display_gui()
+
+        palette = self.palette()
+        palette.setColor(QPalette.Background, QColor(220, 240, 230))
+        self.setPalette(palette)
 
     def read_expenses_data(self):
         """
@@ -52,6 +59,8 @@ class HelperPage(QWidget):
         """
         self.return_main_button = QPushButton("Back to Main Page")
         self.layout.addWidget(self.return_main_button)
+        self.return_main_button.setStyleSheet(
+            "background-color: #5DA56C; color: white; font-weight: bold; font-size: 14px;")
 
     def prepare_data(self):
         """
@@ -104,6 +113,18 @@ class HelperPage(QWidget):
         """
         Display the spending reduction recommendations on the GUI.
         """
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
+
+        self.layout.addStretch(1)
+
         for recommendation in self.recommendations:
             label = QLabel(recommendation)
+            label.setStyleSheet(
+                "color: #20553F; font-weight: bold; font-size: 20px;")
+            label.setAlignment(Qt.AlignCenter)
             self.layout.addWidget(label)
+
+        self.layout.addStretch(1)
+
+        self.layout.addWidget(self.return_main_button)

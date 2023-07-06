@@ -95,11 +95,10 @@ class Application:
 if __name__ == "__main__":
     file_path = os.path.join(os.path.dirname(
         os.path.abspath(__file__)), 'expenses.json')
-    
+
     if not os.path.exists(file_path):
         with open(file_path, "w") as file:
             json.dump(data, file, indent=4)
-    
 
     application = Application()
     application.run()

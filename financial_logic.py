@@ -97,9 +97,12 @@ class FinancialLogic:
         Args:
             filename (str): The name of the JSON file
         """
-        json_data = {'money': self.expenses,
-                     'totalSum': self.calculate_total_expenses()}
         file_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.data = json.load(file)
+        json_data = {'money': self.expenses,
+                     'totalSum': self.calculate_total_expenses(),
+                     'budget': self.data['budget']}
         with open(file_path, 'w') as file:
             json.dump(json_data, file, indent=4)
