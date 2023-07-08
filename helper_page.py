@@ -1,57 +1,66 @@
 import os
 import json
-import numpy as np
-from PyQt5.QtCore import Qt
-from sklearn.cluster import KMeans
+from datetime import datetime
 from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QPushButton, QMainWindow
 
-
-class HelperPage(QWidget):
-    """
-    A helper page widget for generating spending reduction recommendations.
-    """
-
+class HelperPage(QMainWindow):
     def __init__(self):
-        """
-        Initialize the HelperPage widget.
-        """
         super().__init__()
-        self.data = None
-        self.categories = None
-        self.category_names = None
-        self.spendings = None
-        self.X = None
-        self.labels = None
-        self.budget = None
-        self.reduction_categories = []
-        self.reduction_amounts = []
-        self.recommendations = []
 
-        self.layout = QVBoxLayout()
+        self.setWindowTitle("Spending Reduction Categories")
+
         self.resize(800, 600)
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.read_expenses_data()
+        self.current_month = datetime.now().strftime("%B")
+
+        # Read the JSON file
+        file_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.data = json.load(file)
+
+
+        self.budget = self.data[self.current_month]['budget']
+        self.total_sum = self.data[self.current_month]['totalSum']
+        self.money = self.data[self.current_month]['money']
+        
+        self.setup_ui()
         self.create_return_main_button()
-        self.prepare_data()
-        self.perform_clustering()
-        self.identify_reductions()
-        self.generate_recommendations()
-        self.display_gui()
 
         palette = self.palette()
         palette.setColor(QPalette.Background, QColor(220, 240, 230))
         self.setPalette(palette)
+        
 
-    def read_expenses_data(self):
-        """
-        Read the expenses data from a JSON file.
-        """
-        file_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), 'expenses.json')
-        with open(file_path, 'r') as file:
-            self.data = json.load(file)
+    def setup_ui(self):
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+
+        # Calculate the remaining amount to fulfill the budget
+        remaining_amount = self.budget - self.total_sum
+
+        # Identify the categories with excessive spending
+        categories_to_reduce = []
+        for category, details in self.money.items():
+            sum_of_amounts = details['sumOfAmounts']
+            if sum_of_amounts > 0 and sum_of_amounts > self.budget:
+                categories_to_reduce.append(category)
+
+        # Display the categories to reduce spending
+        label = QLabel("Categories to reduce spending:")
+        label.setStyleSheet("color: black; font-weight: bold; font-size: 16px;")
+        self.layout.addWidget(label)
+
+        for category in categories_to_reduce:
+            category_label = QLabel(category)
+            category_label.setStyleSheet("color: black;")
+            self.layout.addWidget(category_label)
+
+        central_widget.setLayout(self.layout)
+
 
     def create_return_main_button(self):
         """
@@ -61,70 +70,3 @@ class HelperPage(QWidget):
         self.layout.addWidget(self.return_main_button)
         self.return_main_button.setStyleSheet(
             "background-color: #5DA56C; color: white; font-weight: bold; font-size: 14px;")
-
-    def prepare_data(self):
-        """
-        Prepare the data for clustering.
-        """
-        self.categories = self.data['money']
-        self.category_names = list(self.categories.keys())
-        self.spendings = [self.categories[category]['sumOfAmounts']
-                          for category in self.category_names]
-        self.X = np.array(self.spendings).reshape(-1, 1)
-
-    def perform_clustering(self, n_clusters=2):
-        """Perform clustering on the data using K-means algorithm.
-
-        Args:
-            n_clusters (int): Number of clusters for K-means algorithm.
-
-        """
-        kmeans = KMeans(n_clusters=n_clusters)
-        kmeans.fit(self.X)
-        self.labels = kmeans.labels_
-
-    def identify_reductions(self):
-        """
-        Identify categories that require spending reductions based on budget constraints.
-        """
-        self.budget = self.data['budget']
-        for i, category in enumerate(self.category_names):
-            items = self.categories[category]['items']
-            if len(items) > 0:
-                cluster_label = self.labels[i]
-                cluster_spending = np.mean(
-                    self.X[self.labels == cluster_label])
-                average_spending = self.categories[category]['sumOfAmounts'] / len(
-                    items)
-                if average_spending > self.budget:
-                    self.reduction_categories.append(category)
-                    reduction_amount = average_spending - self.budget
-                    self.reduction_amounts.append(reduction_amount)
-
-    def generate_recommendations(self):
-        """
-        Generate spending reduction recommendations for identified categories.
-        """
-        for category, reduction_amount in zip(self.reduction_categories, self.reduction_amounts):
-            recommendation = f"Reduce spending in {category} by ${reduction_amount:.2f}"
-            self.recommendations.append(recommendation)
-
-    def display_gui(self):
-        """
-        Display the spending reduction recommendations on the GUI.
-        """
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().setParent(None)
-
-        self.layout.addStretch(1)
-
-        for recommendation in self.recommendations:
-            label = QLabel(recommendation)
-            label.setStyleSheet(
-                "color: #20553F; font-weight: bold; font-size: 20px;")
-            label.setAlignment(Qt.AlignCenter)
-            self.layout.addWidget(label)
-
-        self.layout.addStretch(1)
-
-        self.layout.addWidget(self.return_main_button)

@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 
 
 class FinancialLogic:
@@ -17,6 +18,7 @@ class FinancialLogic:
 
         Sets up the initial state with an empty dictionary to store expenses.
         """
+        self.current_month = datetime.now().strftime("%B")
         self.expenses = {}
 
     def add_expense(self, amount, category, description):
@@ -31,6 +33,7 @@ class FinancialLogic:
             'amount': amount,
             'description': description
         }
+        print(self.expenses)
         if category not in self.expenses:
             self.expenses[category] = {
                 'items': [expense], 'sumOfAmounts': amount}
@@ -101,8 +104,12 @@ class FinancialLogic:
             os.path.abspath(__file__)), 'expenses.json')
         with open(file_path) as file:
             self.data = json.load(file)
-        json_data = {'money': self.expenses,
-                     'totalSum': self.calculate_total_expenses(),
-                     'budget': self.data['budget']}
+        self.data[self.current_month]['money'] = self.expenses
+        self.data[self.current_month]['totalSum'] = self.calculate_total_expenses()
+
+        # json_data = {'money': self.expenses,
+        #              'totalSum': self.calculate_total_expenses(),
+        #              'budget': self.data['budget']}
+        json_data = self.data
         with open(file_path, 'w') as file:
             json.dump(json_data, file, indent=4)

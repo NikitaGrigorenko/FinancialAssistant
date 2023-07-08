@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtChart import QChartView, QChart, QPieSeries
@@ -34,6 +35,8 @@ class MainPage(QWidget):
         palette.setColor(QPalette.Background, QColor(220, 240, 230))
         self.setPalette(palette)
 
+        self.current_month = datetime.now().strftime("%B")
+
         self.load_data()
         self.create_pie_chart()
         self.create_total_sum_label()
@@ -66,8 +69,8 @@ class MainPage(QWidget):
         self.chart = QChart()
         series = QPieSeries()
 
-        categories = list(self.data["money"].keys())
-        amounts = [self.data["money"][category]["sumOfAmounts"]
+        categories = list(self.data[self.current_month]["money"].keys())
+        amounts = [self.data[self.current_month]["money"][category]["sumOfAmounts"]
                    for category in categories]
 
         total_amount = sum(amounts)
@@ -98,7 +101,7 @@ class MainPage(QWidget):
         """
         Creates and displays the label showing the total sum of expenses.
         """
-        total_sum_label = QLabel(f"Total Sum: {self.data['totalSum']}")
+        total_sum_label = QLabel(f"Total Sum: {self.data[self.current_month]['totalSum']}")
         total_sum_label.setStyleSheet(
             "color: #20553F; font-weight: bold; font-size: 16px;")
         self.layout.addWidget(total_sum_label)
@@ -114,7 +117,7 @@ class MainPage(QWidget):
                 budget_label = item.widget()
                 break
 
-        if self.data['budget'] == 0.0:
+        if self.data[self.current_month]['budget'] == 0.0:
             window = QMainWindow(self)
             window.setWindowTitle("Enter Budget")
 
@@ -139,19 +142,20 @@ class MainPage(QWidget):
                 lambda: self.handle_budget_confirmation(input_field, window))
 
         if budget_label is None:
-            budget_label = QLabel(f"Budget: {self.data['budget']}")
+            print(self.data[self.current_month]['budget'])
+            budget_label = QLabel(f"Budget: {self.data[self.current_month]['budget']}")
             budget_label.setObjectName("budget_label")
             budget_label.setStyleSheet(
                 "color: #20553F; font-weight: bold; font-size: 16px;")
             self.layout.addWidget(budget_label)
         else:
-            budget_label.setText(f"Budget: {self.data['budget']}")
+            budget_label.setText(f"Budget: {self.data[self.current_month]['budget']}")
 
     def handle_budget_confirmation(self, input_field, window):
         """
         Handles the confirmation of the budget input.
         """
-        self.data['budget'] = float(input_field.text())
+        self.data[self.current_month]['budget'] = float(input_field.text())
         self.update_data(self.data)
         self.save_expenses_to_json()
         window.close()
@@ -195,8 +199,8 @@ class MainPage(QWidget):
 
         series = QPieSeries()
 
-        categories = list(self.data["money"].keys())
-        amounts = [self.data["money"][category]["sumOfAmounts"]
+        categories = list(self.data[self.current_month]["money"].keys())
+        amounts = [self.data[self.current_month]["money"][category]["sumOfAmounts"]
                    for category in categories]
 
         total_amount = sum(amounts)
@@ -223,7 +227,7 @@ class MainPage(QWidget):
         Updates the total sum label with the updated total sum value.
         """
         total_sum_label = self.layout.itemAt(1).widget()
-        total_sum_label.setText(f"Total Sum: {self.data['totalSum']}")
+        total_sum_label.setText(f"Total Sum: {self.data[self.current_month]['totalSum']}")
 
     def save_expenses_to_json(self):
         """Saves expenses to a JSON file
@@ -231,9 +235,7 @@ class MainPage(QWidget):
         Args:
             filename (str): The name of the JSON file
         """
-        json_data = {'money': self.data['money'],
-                     'totalSum': self.data['totalSum'],
-                     'budget': self.data['budget']}
+        json_data = self.data
         file_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), 'expenses.json')
         with open(file_path, 'w') as file:

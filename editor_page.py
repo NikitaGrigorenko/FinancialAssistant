@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from constants import category_type
 from PyQt5.QtGui import QColor, QPalette
 from financial_logic import FinancialLogic
@@ -73,6 +74,8 @@ class ExpenseTracker(QWidget):
         self.expense_amount_input = None
         self.expense_category_input = None
         self.expense_description_input = None
+
+        self.current_month = datetime.now().strftime("%B")
 
         self.init_ui()
 
