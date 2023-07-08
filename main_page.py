@@ -4,7 +4,7 @@ from datetime import datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtChart import QChartView, QChart, QPieSeries
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QMainWindow
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QMainWindow, QComboBox
 
 
 class MainPage(QWidget):
@@ -35,11 +35,14 @@ class MainPage(QWidget):
         palette.setColor(QPalette.Background, QColor(220, 240, 230))
         self.setPalette(palette)
 
+        self.month_combobox = None
         self.current_month = datetime.now().strftime("%B")
 
         self.load_data()
+        self.create_month_combobox()
         self.create_pie_chart()
-        self.create_total_sum_label()
+        self.update_total_sum_label()
+        # self.create_total_sum_label()
         self.create_budget_label()
         self.create_edit_button()
         self.create_helper_button()
@@ -56,6 +59,25 @@ class MainPage(QWidget):
             os.path.abspath(__file__)), 'expenses.json')
         with open(file_path) as file:
             self.data = json.load(file)
+
+    def create_month_combobox(self):
+        """
+        Creates and displays a combobox for selecting the month.
+        """
+        self.month_combobox = QComboBox()
+        self.month_combobox.addItems(self.data.keys())
+        self.month_combobox.setCurrentText(self.current_month)
+        self.month_combobox.currentTextChanged.connect(
+            self.handle_month_combobox)
+        self.layout.addWidget(self.month_combobox)
+
+    def handle_month_combobox(self, month):
+        """
+        Handles the selection of a month in the combobox.
+        """
+        self.current_month = month
+        self.update_pie_chart()
+        self.update_total_sum_label()
 
     def create_pie_chart(self):
         """
@@ -97,15 +119,6 @@ class MainPage(QWidget):
         chart_view = QChartView(self.chart)
         self.layout.addWidget(chart_view)
 
-    def create_total_sum_label(self):
-        """
-        Creates and displays the label showing the total sum of expenses.
-        """
-        total_sum_label = QLabel(f"Total Sum: {self.data[self.current_month]['totalSum']}")
-        total_sum_label.setStyleSheet(
-            "color: #20553F; font-weight: bold; font-size: 16px;")
-        self.layout.addWidget(total_sum_label)
-
     def create_budget_label(self):
         """
         Creates and displays the label showing the budget.
@@ -142,14 +155,15 @@ class MainPage(QWidget):
                 lambda: self.handle_budget_confirmation(input_field, window))
 
         if budget_label is None:
-            print(self.data[self.current_month]['budget'])
-            budget_label = QLabel(f"Budget: {self.data[self.current_month]['budget']}")
+            budget_label = QLabel(
+                f"Budget: {self.data[self.current_month]['budget']}")
             budget_label.setObjectName("budget_label")
             budget_label.setStyleSheet(
                 "color: #20553F; font-weight: bold; font-size: 16px;")
             self.layout.addWidget(budget_label)
         else:
-            budget_label.setText(f"Budget: {self.data[self.current_month]['budget']}")
+            budget_label.setText(
+                f"Budget: {self.data[self.current_month]['budget']}")
 
     def handle_budget_confirmation(self, input_field, window):
         """
@@ -226,8 +240,23 @@ class MainPage(QWidget):
         """
         Updates the total sum label with the updated total sum value.
         """
-        total_sum_label = self.layout.itemAt(1).widget()
-        total_sum_label.setText(f"Total Sum: {self.data[self.current_month]['totalSum']}")
+        total_sum_label = None
+        for i in range(self.layout.count()):
+            item = self.layout.itemAt(i)
+            if item.widget() and isinstance(item.widget(), QLabel) and item.widget().objectName() == "total_sum_label":
+                total_sum_label = item.widget()
+                break
+
+        if total_sum_label is None:
+            total_sum_label = QLabel(
+                f"Total Sum: {self.data[self.current_month]['totalSum']}")
+            total_sum_label.setObjectName("total_sum_label")
+            total_sum_label.setStyleSheet(
+                "color: #20553F; font-weight: bold; font-size: 16px;")
+            self.layout.addWidget(total_sum_label)
+        else:
+            total_sum_label.setText(
+                f"Total Sum: {self.data[self.current_month]['totalSum']}")
 
     def save_expenses_to_json(self):
         """Saves expenses to a JSON file

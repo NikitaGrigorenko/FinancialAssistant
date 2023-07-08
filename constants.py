@@ -14,51 +14,64 @@ category_type = {
 
 
 data = {
-    "money": {
-        "Food": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Transport": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Sport": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Home": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Transfers": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Clothing": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Services": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Education": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Other": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Medicine": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        },
-        "Entertainment": {
-            "items": [],
-            "sumOfAmounts": 0.0
-        }
+    "January": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
     },
-    "totalSum": 0.0
+    "February": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "March": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "April": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "May": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "June": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "July": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "August": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "September": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "October": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "November": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    },
+    "December": {
+        "money": {},
+        "totalSum": 0.0,
+        "budget": 0.0
+    }
 }

@@ -19,7 +19,6 @@ class FinancialLogic:
         Sets up the initial state with an empty dictionary to store expenses.
         """
         self.current_month = datetime.now().strftime("%B")
-        self.expenses = {}
 
     def add_expense(self, amount, category, description):
         """Adds an expense to the list of expenses
@@ -33,7 +32,11 @@ class FinancialLogic:
             'amount': amount,
             'description': description
         }
-        print(self.expenses)
+        file_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.expenses = json.load(file)
+            self.expenses = self.expenses[self.current_month]['money']
         if category not in self.expenses:
             self.expenses[category] = {
                 'items': [expense], 'sumOfAmounts': amount}
@@ -51,6 +54,11 @@ class FinancialLogic:
             amount (float): The updated amount of the expense
             description (str): The updated description of the expense
         """
+        file_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.expenses = json.load(file)
+            self.expenses = self.expenses[self.current_month]['money']
         if category in self.expenses and index < len(self.expenses[category]['items']):
             old_amount = self.expenses[category]['items'][index]['amount']
             self.expenses[category]['sumOfAmounts'] += amount - old_amount
@@ -65,6 +73,11 @@ class FinancialLogic:
             category (str): The category of the expense
             index (int): The index of the expense to delete
         """
+        file_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.expenses = json.load(file)
+            self.expenses = self.expenses[self.current_month]['money']
         if category in self.expenses and index < len(self.expenses[category]['items']):
             deleted_expense = self.expenses[category]['items'].pop(index)
             self.expenses[category]['sumOfAmounts'] -= deleted_expense['amount']
@@ -89,6 +102,11 @@ class FinancialLogic:
         Returns:
             list: the expenses of a certain category
         """
+        file_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), 'expenses.json')
+        with open(file_path) as file:
+            self.expenses = json.load(file)
+            self.expenses = self.expenses[self.current_month]['money']
         if category in self.expenses:
             return self.expenses[category]['items']
         else:
@@ -107,9 +125,6 @@ class FinancialLogic:
         self.data[self.current_month]['money'] = self.expenses
         self.data[self.current_month]['totalSum'] = self.calculate_total_expenses()
 
-        # json_data = {'money': self.expenses,
-        #              'totalSum': self.calculate_total_expenses(),
-        #              'budget': self.data['budget']}
         json_data = self.data
         with open(file_path, 'w') as file:
             json.dump(json_data, file, indent=4)

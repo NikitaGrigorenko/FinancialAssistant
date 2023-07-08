@@ -85,7 +85,7 @@ class ExpenseTracker(QWidget):
         """
         layout = QVBoxLayout()
 
-        label = QLabel("Expense Tracker")
+        label = QLabel(f'Expense Tracker at {self.current_month}')
         label.setStyleSheet(
             "color: #20553F; font-weight: bold; font-size: 24px;")
         layout.addWidget(label)
