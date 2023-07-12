@@ -28,3 +28,13 @@ The syntax for a sample invocation of this app is as follows:
 ```bash
 python3 main.py
 ```
+
+After launching our app for the first time, you will be asked to set a budget for the current month. It will look like this.
+After you do this, the main page will remain in front of you, which will show your spending by category this month.
+![alt text](https://github.com/NikitaGrigorenko/FinancialAssistant/blob/main/assets/1.png)
+
+By switching to the edit page, you can add new expenses, edit existing ones, and delete expenses.
+![alt text](https://github.com/NikitaGrigorenko/FinancialAssistant/blob/main/assets/2.png)
+
+The assistant page shows you the categories in which it is worth reducing expenses in order not to exceed the budget.
+![alt text](https://github.com/NikitaGrigorenko/FinancialAssistant/blob/main/assets/3.png)
